@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/board_service.dart';
@@ -17,6 +16,7 @@ class _BoardScreenState extends State<BoardScreen> {
   final _controller = TextEditingController();
   late final Stream<List<Message>> _stream = _board.messageBoard();
   bool _posting = false;
+  late String _draftId = _board.newId();
 
   @override
   void dispose() {
@@ -40,11 +40,13 @@ class _BoardScreenState extends State<BoardScreen> {
     setState(() => _posting = true);
     try {
       await _board.postMessage(
+        id: _draftId,
         authorUid: widget.user.uid,
         authorName: widget.displayName,
         text: text,
       );
       _controller.clear();
+      _draftId = _board.newId();
     } catch (e) {
       if (mounted) _snack(_errorText(e));
     } finally {

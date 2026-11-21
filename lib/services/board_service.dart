@@ -34,12 +34,15 @@ class BoardService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// CREATE
+  String newId() => _db.collection('messages').doc().id;
+
   Future<void> postMessage({
+    required String id,
     required String authorUid,
     required String authorName,
     required String text,
   }) {
-    return _db.collection('messages').add({
+    return _db.collection('messages').doc(id).set({
       'authorUid': authorUid,
       'authorName': authorName,
       'text': text,
